@@ -1,0 +1,58 @@
+PROFIT Colour = IF([YOY PROFIT]>0, "Green", "Red" ) 
+
+PROFIT MARGIN = SUM(ecommerce_data[profit_per_order]) / SUM(ecommerce_data[sales_per_order])
+
+PROFIT MARGIN Colour = IF([YOY PROFIT MARGIN]>0, "Green", "Red" )
+
+PROFIT_Icon = var positive_Icon = UNICHAR(9650) 
+            var Negative_Icon = UNICHAR(9660)
+                var result = IF([YOY PROFIT]>0, positive_Icon, Negative_Icon)
+                return result
+
+PROFIT_MARGIN_Icon = var positive_Icon = UNICHAR(9650) 
+                    var Negative_Icon = UNICHAR(9660)
+                    var result = IF([YOY PROFIT MARGIN]>0, positive_Icon, Negative_Icon)
+                    return result
+PTYD PROFIT = CALCULATE(SUM(ecommerce_data[profit_per_order]),DATESYTD(SAMEPERIODLASTYEAR('Calendar'[Date]) ))
+
+PTYD PROFIT MARGIN = CALCULATE([PROFIT MARGIN],DATESYTD(SAMEPERIODLASTYEAR('Calendar'[Date])))
+
+PTYD QTY = CALCULATE(SUM(ecommerce_data[order_quantity]),DATESYTD(SAMEPERIODLASTYEAR('Calendar'[Date]) ))
+
+PTYD Sales = CALCULATE(SUM(ecommerce_data[sales_per_order]),DATESYTD(SAMEPERIODLASTYEAR('Calendar'[Date]) ))
+
+QTY Colour = IF([YOY QTY]>0 , "Green","Red" ) 
+
+QTY Icon Colour = IF([YOY QTY]>0, "Green", "Red" ) 
+
+QTY_Icon = var positive_Icon = UNICHAR(9650) 
+            var Negative_Icon = UNICHAR(9660)
+                var result = IF([YOY QTY]>0, positive_Icon, Negative_Icon)
+                return result
+
+Sales Colour = IF([YOY Sales]>0 , "Green","Red" )
+
+Sales Icon Colour = IF([YOY Sales]>0, "Green", "Red" ) 
+
+Sales_Icon = var positive_Icon = UNICHAR(9650) 
+            var Negative_Icon = UNICHAR(9660)
+                var result = IF([YOY Sales]>0, positive_Icon, Negative_Icon)
+                return result
+
+YOY PROFIT = ([YTD PROFIT]-[PTYD PROFIT])/[PTYD PROFIT]
+
+YOY PROFIT MARGIN = ([YTD PROFIT MARGIN]-[PTYD PROFIT MARGIN]) / [PTYD PROFIT MARGIN]
+
+YOY QTY = ([YTD QTY]-[PTYD QTY])/[PTYD QTY]
+
+YOY Sales = ([YTD Sales]-[PTYD Sales])/[YTD Sales]
+
+YTD Concentaed Qty = CONCATENATE("#",FORMAT([YTD QTY]/1000,"0.0 K"))
+
+YTD PROFIT = TOTALYTD(SUM(ecommerce_data[profit_per_order]),'Calendar'[Date]) 
+
+YTD PROFIT MARGIN = TOTALYTD([PROFIT MARGIN],'Calendar'[Date]) 
+
+YTD QTY = TOTALYTD(SUM(ecommerce_data[order_quantity]),'Calendar'[Date]) 
+
+YTD Sales = TOTALYTD(SUM(ecommerce_data[sales_per_order]),'Calendar'[Date]) 
