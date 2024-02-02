@@ -1,0 +1,117 @@
+show databases
+
+Create Database Pizza_DB;
+use Pizza_DB;
+create table pizza_sales 
+(
+pizza_id int,
+order_id int,
+pizza_name_id varchar(50),
+quantity int,
+order_date varchar(30),
+order_time varchar(30),
+unit_price float,
+total_price float,
+pizza_size varchar(5),
+pizza_category varchar(15),
+pizza_ingredients varchar(250),
+pizza_name varchar(150)
+);
+
+drop table pizza_sales
+
+load data infile 'E:\pizza_sales.csv'
+into table pizza_sales
+fields terminated by ','
+enclosed by '"'
+lines terminated by '\r\n'
+ignore 1 rows; 
+
+select * from pizza_sales
+
+---
+
+str_to_date(order_date,'%d/%m/%Y')
+
+update pizza_sales 
+SET order_date = str_to_date(order_date,'%d/%m/%Y')
+
+SET @@SESSION.sql_mode='ALLOW_INVALID_DATES';
+
+update pizza_sales
+set order_time = str_to_date(order_time,'T%')
+
+----
+
+select * from pizza_sales
+
+Select sum(total_price) as Total_Revenue from pizza_sales
+
+select sum(total_price) / count(distinct order_id) as Avarage_Order_Value from pizza_sales
+
+select sum(quantity) as Total_Pizza_Sold from pizza_sales
+
+select count(distinct order_id) as Total_Order from pizza_sales
+
+select sum(quantity) / count(distinct order_id) as Avarage_Pizza_Order from pizza_sales
+
+select DATENAME(DW, order_date) as Order_day , count(distinct order_id) as Total_orders from pizza_sales
+
+select weekname(DW, order_date) as Order_day , count(distinct order_id) as Total_orders from pizza_sales
+select weekday(DW, order_date) as Order_day , count(distinct order_id) as Total_orders from pizza_sales
+
+select dayname(order_date) as Order_day , count(distinct order_id) as Total_orders from pizza_sales group by dayname(order_date)
+
+select dayname(order_date) as Order_day from pizza_sales 
+select weekday(order_date) as Order_day from pizza_sales 
+select DATENAME(order_date) as Order_day from pizza_sales 
+select date_format('2022-01-01','%W');
+
+select date_format(order_date ,'%W') as Order_day , count(distinct order_id) as Total_orders from pizza_sales group by date_format(order_date,'%W')
+
+select monthname(order_date) as monthly_order , count(distinct order_id) as Total_order from pizza_sales group by monthname(order_date) order by Total_order desc
+
+select * from pizza_sales
+
+select pizza_category , (sum(quantity) / sum(order_id))*100  as total_percentage from pizza_sales
+group by pizza_category
+
+select pizza_category , sum(total_price) *100 / (select sum(total_price) from pizza_sales) as percentage_total_sales from pizza_sales group by pizza_category
+
+select pizza_category , sum(total_price) as Total_price ,  
+(sum(total_price) / (select sum(total_price) from pizza_sales where month(order_date) = 1 ))*100 as percentage_total_sales from pizza_sales 
+where month(order_date) = 1
+group by pizza_category
+
+select sum(total_price) from pizza_sales
+
+select pizza_category, sum(total_price) from pizza_sales group by pizza_category
+
+select * from pizza_sales
+
+select pizza_category, pizza_size , count(pizza_size), sum(total_price) ,
+(sum(total_price) / (select sum(total_price) as Total_sales from pizza_sales))*100 as percentage_pizza_size
+from pizza_sales
+group by pizza_size
+order by pizza_size 
+
+
+select pizza_name, sum(quantity) , sum(total_price) as Total_Revenue from pizza_sales
+group by pizza_name
+order by sum(total_price) desc
+limit 5
+
+select pizza_name, sum(quantity) , sum(total_price) as Total_Revenue from pizza_sales
+group by pizza_name
+order by sum(quantity) asc
+limit 5 
+
+select pizza_name, sum(quantity) , count(distinct order_id) as Total_Orders from pizza_sales
+group by pizza_name
+order by (Total_orders) desc
+limit 5
+
+select pizza_name, sum(quantity) , count(distinct order_id) as Total_Orders from pizza_sales
+group by pizza_name
+order by (Total_orders) asc
+limit 5
